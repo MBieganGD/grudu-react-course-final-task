@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import Tweets from "../../views/Tweets";
+import Home from "../../views/Home";
 import Login from "../../views/Login";
 import SignUp from "../../views/SignUp";
 import NotFound from "../../views/NotFound";
@@ -7,7 +7,7 @@ import NotFound from "../../views/NotFound";
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Tweets />,
+    element: <Home />,
   },
   {
     path: "/login",
