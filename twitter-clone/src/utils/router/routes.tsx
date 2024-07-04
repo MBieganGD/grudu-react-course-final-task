@@ -1,13 +1,13 @@
-import { createBrowserRouter } from "react-router-dom";
+import { Navigate, RouteObject } from "react-router-dom";
 import Home from "../../views/Home";
 import Login from "../../views/Login";
 import SignUp from "../../views/SignUp";
 import NotFound from "../../views/NotFound";
 
-export const router = createBrowserRouter([
+export const routes = (isAuthenticated: boolean): RouteObject[] => [
   {
     path: "/",
-    element: <Home />,
+    element: isAuthenticated ? <Home /> : <Navigate to="/login" replace />,
   },
   {
     path: "/login",
@@ -21,4 +21,4 @@ export const router = createBrowserRouter([
     path: "*",
     element: <NotFound />,
   },
-]);
+];

@@ -8,8 +8,9 @@ import {
   Typography,
 } from "@mui/material";
 import TwitterIcon from "@mui/icons-material/Twitter";
+import { TweetProps } from "../types/TweetProps";
 
-const Tweet: React.FC = (tweet) => {
+const Tweet: React.FC<{ tweet: TweetProps }> = ({ tweet }) => {
   return (
     <Card
       sx={{
@@ -29,16 +30,14 @@ const Tweet: React.FC = (tweet) => {
         title={
           <Box>
             <Typography variant="h6" sx={{ fontWeight: 700 }}>
-              {/* {tweet.author.name} */}
-              Full Name
+              {tweet.author?.name}
             </Typography>
             <Typography
               variant="body2"
               component="span"
               sx={{ color: "gray", ml: 1 }}
             >
-              {/* @{tweet.author.username} */}
-              @username
+              @{tweet.author?.id}
             </Typography>
           </Box>
         }
@@ -49,11 +48,9 @@ const Tweet: React.FC = (tweet) => {
           variant="body1"
           sx={{ whiteSpace: "pre-wrap" }}
           dangerouslySetInnerHTML={{
-            __html: "<p>Hi from <b>test</b>inner HTML</p>",
+            __html: `${tweet.text}`,
           }}
-        >
-          {/* {tweet.text} */}
-        </Typography>
+        ></Typography>
       </CardContent>
     </Card>
   );

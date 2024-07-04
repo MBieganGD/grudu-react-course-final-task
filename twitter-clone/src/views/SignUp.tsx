@@ -1,3 +1,10 @@
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+
+import { signupValidationSchema } from "../utils/validation/validation";
+
 import {
   Container,
   CssBaseline,
@@ -7,103 +14,140 @@ import {
   Grid,
   TextField,
   Button,
+  Alert,
 } from "@mui/material";
-import React from "react";
-import { Link } from "react-router-dom";
 
 const SignUp: React.FC = () => {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+  const navigate = useNavigate();
+  const { status, error, handleSignUp } = useAuth();
+
+  const onSignUp = async (
+    values: { email: string; fullName: string; password: string },
+    { setSubmitting }: any
+  ) => {
+    await handleSignUp(values.email, values.fullName, values.password);
+    setSubmitting(false);
   };
 
+  useEffect(() => {
+    if (status === "succeeded") {
+      navigate("/");
+    }
+  }, [status, navigate]);
+
   return (
-    <>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <Box
+        sx={{
+          marginTop: 8,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}></Avatar>
+        <Typography component="h1" variant="h5">
+          Sign up
+        </Typography>
+        <Formik
+          initialValues={{
+            email: "",
+            fullName: "",
+            password: "",
+            passwordConfirmation: "",
           }}
+          validationSchema={signupValidationSchema}
+          onSubmit={onSignUp}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}></Avatar>
-          <Typography component="h1" variant="h5">
-            Sign up
-          </Typography>
-          <Box
-            component="form"
-            noValidate
-            onSubmit={handleSubmit}
-            sx={{ mt: 3 }}
-          >
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  autoComplete="nickname"
-                  name="username"
-                  required
-                  fullWidth
-                  id="username"
-                  label="Username"
-                  autoFocus
-                />
+          {({ isSubmitting, isValid }) => (
+            <Form noValidate>
+              <Field
+                as={TextField}
+                margin="normal"
+                required
+                fullWidth
+                id="fullName"
+                label="FullName"
+                name="fullName"
+                autoComplete="name"
+                autoFocus
+                helperText={
+                  <ErrorMessage name="fullName">
+                    {(msg) => <span style={{ color: "red" }}>{msg}</span>}
+                  </ErrorMessage>
+                }
+              />
+              <Field
+                as={TextField}
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email"
+                name="email"
+                autoComplete="email"
+                helperText={
+                  <ErrorMessage name="email">
+                    {(msg) => <span style={{ color: "red" }}>{msg}</span>}
+                  </ErrorMessage>
+                }
+              />
+              <Field
+                as={TextField}
+                margin="normal"
+                required
+                fullWidth
+                id="password"
+                label="Password"
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                helperText={
+                  <ErrorMessage name="password">
+                    {(msg) => <span style={{ color: "red" }}>{msg}</span>}
+                  </ErrorMessage>
+                }
+              />
+              <Field
+                as={TextField}
+                margin="normal"
+                required
+                fullWidth
+                id="passwordConfirmation"
+                label="Password Confirmation"
+                name="passwordConfirmation"
+                type="password"
+                helperText={
+                  <ErrorMessage name="passwordConfirmation">
+                    {(msg) => <span style={{ color: "red" }}>{msg}</span>}
+                  </ErrorMessage>
+                }
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                disabled={isSubmitting || !isValid}
+              >
+                Sign Up
+              </Button>
+              {error && (
+                <Alert severity="error" sx={{ mt: 2 }}>
+                  {error}
+                </Alert>
+              )}
+              <Grid container>
+                <Grid item>
+                  <Link to="/login">{"Already have an account? Login"}</Link>
+                </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="fullname"
-                  label="Full Name"
-                  name="fullname"
-                  autoComplete="given-name family-name"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
-                />
-              </Grid>
-            </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign Up
-            </Button>
-            <Grid container justifyContent="flex-end">
-              <Grid item>
-                <Link to="/login">Already have an account? Sign in</Link>
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
-      </Container>
-    </>
+            </Form>
+          )}
+        </Formik>
+      </Box>
+    </Container>
   );
 };
 

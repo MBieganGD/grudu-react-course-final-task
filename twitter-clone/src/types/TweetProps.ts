@@ -1,7 +1,8 @@
+import { User } from "./User";
+
 export type TweetProps = {
-  tweet: {
-    id: string;
-    author_id: string;
-    text: string;
-  };
+  id: string;
+  author_id: string;
+  author?: User;
+  text: string;
 };

@@ -1,4 +1,8 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import { AppDispatch, RootState } from "../store/store";
+
 import {
   Box,
   Button,
@@ -7,12 +11,17 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { addTweet, fetchTweets } from "../tweets/tweetSlice";
 
 const MAX_CHAR_COUNT = 140;
 
 const AddNewTweet: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const [tweetText, setTweetText] = useState("");
   const remainingChars = MAX_CHAR_COUNT - tweetText.length;
+
+  const user = useSelector((state: RootState) => state.auth.user);
+  const userId = user ? user.id : null;
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.value.length <= MAX_CHAR_COUNT) {
@@ -20,6 +29,13 @@ const AddNewTweet: React.FC = () => {
     }
   };
 
+  const handleSubmit = async () => {
+    if (tweetText.length > 0 && tweetText.length <= MAX_CHAR_COUNT && userId) {
+      await dispatch(addTweet({ tweetText, userId }));
+      dispatch(fetchTweets());
+      setTweetText("");
+    }
+  };
   return (
     <Card
       sx={{
@@ -73,6 +89,7 @@ const AddNewTweet: React.FC = () => {
         <Button
           variant="contained"
           disabled={tweetText.length < 1 || tweetText.length > MAX_CHAR_COUNT}
+          onClick={handleSubmit}
           sx={{ borderRadius: 3 }}
         >
           Tweet

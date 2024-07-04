@@ -13,7 +13,11 @@ const NotFound: React.FC = () => {
       <Typography variant="body1" gutterBottom>
         Sorry, the page you are looking for does not exist.
       </Typography>
-      <Button variant="contained" color="primary" onClick={() => navigate("/")}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => navigate("/home")}
+      >
         Go to Home
       </Button>
     </Container>
